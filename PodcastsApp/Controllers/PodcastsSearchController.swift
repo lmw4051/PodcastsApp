@@ -11,22 +11,11 @@ import Alamofire
 
 class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   // MARK: - Instance Properties
-  var podcasts = [
-    Podcast(trackName: "AskTheCEO", artistName: "Avrohom Gottheil"),
-    Podcast(trackName: "IT Rockstars", artistName: "Scott Millar"),
-  ]
+  var podcasts = [Podcast]()
   
   let cellId = "CellId"
   
   let searchController = UISearchController(searchResultsController: nil)
-  
-  fileprivate let enterSearchTermLabel: UILabel = {
-    let label = UILabel()
-    label.text = "Please enter search term above..."
-    label.textAlignment = .center
-    label.font = UIFont.boldSystemFont(ofSize: 20)
-    return label
-  }()
   
   // MARK: - View Life Cycle
   override func viewDidLoad() {
@@ -44,7 +33,7 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   }
   
   fileprivate func setupTableView() {
-//    tableView.register(PodcastCell.self, forCellReuseIdentifier: cellId)
+    tableView.tableFooterView = UIView()
     let nib = UINib(nibName: "PodcastCell", bundle: nil)
     tableView.register(nib, forCellReuseIdentifier: cellId)
   }
@@ -72,6 +61,18 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   // MARK: - UITableViewDelegate Methods
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 132
+  }
+  
+  override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    let label = UILabel()
+    label.text = "Please enter a Search Term"
+    label.textAlignment = .center
+    label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+    return label
+  }
+  
+  override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return self.podcasts.count > 0 ? 0 : 250
   }
 }
 
