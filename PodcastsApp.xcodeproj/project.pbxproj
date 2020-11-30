@@ -13,6 +13,7 @@
 		54722B982574B59200CB8A1D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54722B962574B59200CB8A1D /* Main.storyboard */; };
 		54722B9A2574B59400CB8A1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54722B992574B59400CB8A1D /* Assets.xcassets */; };
 		54722B9D2574B59400CB8A1D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54722B9B2574B59400CB8A1D /* LaunchScreen.storyboard */; };
+		54722BA52574B74200CB8A1D /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54722BA42574B74200CB8A1D /* MainTabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		54722B992574B59400CB8A1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		54722B9C2574B59400CB8A1D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		54722B9E2574B59400CB8A1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		54722BA42574B74200CB8A1D /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +58,24 @@
 		54722B8F2574B59200CB8A1D /* PodcastsApp */ = {
 			isa = PBXGroup;
 			children = (
+				54722BA62574B80A00CB8A1D /* Controllers */,
 				54722B902574B59200CB8A1D /* AppDelegate.swift */,
 				54722B922574B59200CB8A1D /* SceneDelegate.swift */,
-				54722B942574B59200CB8A1D /* ViewController.swift */,
 				54722B962574B59200CB8A1D /* Main.storyboard */,
 				54722B992574B59400CB8A1D /* Assets.xcassets */,
 				54722B9B2574B59400CB8A1D /* LaunchScreen.storyboard */,
 				54722B9E2574B59400CB8A1D /* Info.plist */,
 			);
 			path = PodcastsApp;
+			sourceTree = "<group>";
+		};
+		54722BA62574B80A00CB8A1D /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				54722BA42574B74200CB8A1D /* MainTabBarController.swift */,
+				54722B942574B59200CB8A1D /* ViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +151,7 @@
 			files = (
 				54722B952574B59200CB8A1D /* ViewController.swift in Sources */,
 				54722B912574B59200CB8A1D /* AppDelegate.swift in Sources */,
+				54722BA52574B74200CB8A1D /* MainTabBarController.swift in Sources */,
 				54722B932574B59200CB8A1D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
