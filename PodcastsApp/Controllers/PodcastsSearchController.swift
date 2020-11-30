@@ -11,7 +11,7 @@ import Alamofire
 
 class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   // MARK: - Instance Properties
-  let podcasts = [
+  var podcasts = [
     Podcast(trackName: "AskTheCEO", artistName: "Avrohom Gottheil"),
     Podcast(trackName: "IT Rockstars", artistName: "Scott Millar"),
   ]
@@ -40,6 +40,14 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     searchController.searchBar.delegate = self
   }
   
+  // MARK: - UISearchBarDelegate Methods
+  func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    APIService.shared.fetchPodcasts(searchText: searchText) { podcasts in
+      self.podcasts = podcasts
+      self.tableView.reloadData()
+    }        
+  }
+  
   // MARK: - UITableViewDataSource Methods
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return podcasts.count
@@ -52,21 +60,6 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     cell.textLabel?.numberOfLines = -1
     cell.imageView?.image = #imageLiteral(resourceName: "appicon")
     return cell
-  }
-  
-  // MARK: - UISearchBarDelegate Methods
-  func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    let url = "https://itunes.apple.com/search?term=\(searchText)"
-    Alamofire.request(url).responseData { dataResponse in
-      if let error = dataResponse.error {
-        print("Failed to load data")
-        return
-      }
-      
-      guard let data = dataResponse.data else { return }
-      let str = String(data: data, encoding: .utf8)
-      print(str)
-    }
   }
 }
 
