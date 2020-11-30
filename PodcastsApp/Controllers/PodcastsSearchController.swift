@@ -20,6 +20,13 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   
   let searchController = UISearchController(searchResultsController: nil)
   
+  fileprivate let enterSearchTermLabel: UILabel = {
+    let label = UILabel()
+    label.text = "Please enter search term above..."
+    label.textAlignment = .center
+    label.font = UIFont.boldSystemFont(ofSize: 20)
+    return label
+  }()
   
   // MARK: - View Life Cycle
   override func viewDidLoad() {
