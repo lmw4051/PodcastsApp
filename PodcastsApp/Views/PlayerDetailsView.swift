@@ -9,6 +9,7 @@
 import UIKit
 
 class PlayerDetailsView: UIView {
+  // MARK: - Instance Properties
   var episode: Episode! {
     didSet {
       titleLabel.text = episode.title
@@ -17,10 +18,30 @@ class PlayerDetailsView: UIView {
       episodeImageView.sd_setImage(with: url)
     }
   }
-    
-  @IBOutlet weak var titleLabel: UILabel!
+     
+  // MARK: - IBOutlets
+  @IBOutlet weak var authorLabel: UILabel!
+  
+  @IBOutlet weak var titleLabel: UILabel! {
+    didSet {
+      titleLabel.numberOfLines = 2
+    }
+  }
   @IBOutlet weak var episodeImageView: UIImageView!
   
+  @IBOutlet weak var playPauseButton: UIButton! {
+    didSet {
+      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      playPauseButton.addTarget(self, action: #selector(handlePlayPause), for: .touchUpInside)
+    }
+  }
+        
+  // MARK: - Selector Methods
+  @objc func handlePlayPause() {
+    print("handlePlayPause")
+  }
+  
+  // MARK: - IBActions
   @IBAction func handleDismiss(_ sender: Any) {
     self.removeFromSuperview()
   }
