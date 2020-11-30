@@ -24,20 +24,22 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   // MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
-    setupTableView()
     setupSearchBar()
+    setupTableView()
   }
   
   // MARK: - Setup Methods
-  fileprivate func setupTableView() {
-    tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-  }
-  
   fileprivate func setupSearchBar() {
     navigationItem.searchController = searchController
     navigationItem.hidesSearchBarWhenScrolling = false
     searchController.dimsBackgroundDuringPresentation = false
     searchController.searchBar.delegate = self
+  }
+  
+  fileprivate func setupTableView() {
+//    tableView.register(PodcastCell.self, forCellReuseIdentifier: cellId)
+    let nib = UINib(nibName: "PodcastCell", bundle: nil)
+    tableView.register(nib, forCellReuseIdentifier: cellId)
   }
   
   // MARK: - UISearchBarDelegate Methods
@@ -54,12 +56,15 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! PodcastCell
     let podcast = self.podcasts[indexPath.row]
-    cell.textLabel?.text = "\(podcast.trackName)\n\(podcast.artistName)"
-    cell.textLabel?.numberOfLines = -1
-    cell.imageView?.image = #imageLiteral(resourceName: "appicon")
+    cell.podcast = podcast
     return cell
+  }
+  
+  // MARK: - UITableViewDelegate Methods
+  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 132
   }
 }
 
