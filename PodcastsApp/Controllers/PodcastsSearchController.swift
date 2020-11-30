@@ -12,9 +12,7 @@ import Alamofire
 class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   // MARK: - Instance Properties
   var podcasts = [Podcast]()
-  
-  let cellId = "CellId"
-  
+  let cellId = "CellId"  
   let searchController = UISearchController(searchResultsController: nil)
   
   // MARK: - View Life Cycle
@@ -59,6 +57,13 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   }
   
   // MARK: - UITableViewDelegate Methods
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let episodesController = EpisodesController()
+    let podcast = self.podcasts[indexPath.row]
+    episodesController.podcast = podcast
+    navigationController?.pushViewController(episodesController, animated: true)
+  }
+  
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 132
   }
