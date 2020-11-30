@@ -25,6 +25,7 @@
 		54722BC5257502B900CB8A1D /* EpisodeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 54722BC4257502B900CB8A1D /* EpisodeCell.xib */; };
 		54722BC7257502D400CB8A1D /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54722BC6257502D400CB8A1D /* EpisodeCell.swift */; };
 		54722BCA257504FF00CB8A1D /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54722BC9257504FF00CB8A1D /* String.swift */; };
+		54722BCC25752AF900CB8A1D /* RSSFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54722BCB25752AF900CB8A1D /* RSSFeed.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		54722BC4257502B900CB8A1D /* EpisodeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EpisodeCell.xib; sourceTree = "<group>"; };
 		54722BC6257502D400CB8A1D /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
 		54722BC9257504FF00CB8A1D /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		54722BCB25752AF900CB8A1D /* RSSFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeed.swift; sourceTree = "<group>"; };
 		5E74DB4D5A69E5351C721DE4 /* Pods_PodcastsApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PodcastsApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBADC45FBD0F3A8C3FEC4004 /* Pods-PodcastsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodcastsApp.debug.xcconfig"; path = "Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -152,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				54722BC9257504FF00CB8A1D /* String.swift */,
+				54722BCB25752AF900CB8A1D /* RSSFeed.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54722BCC25752AF900CB8A1D /* RSSFeed.swift in Sources */,
 				54722B952574B59200CB8A1D /* ViewController.swift in Sources */,
 				54722BB52574E9DD00CB8A1D /* APIService.swift in Sources */,
 				54722BBF2574F17800CB8A1D /* PodcastCell.swift in Sources */,

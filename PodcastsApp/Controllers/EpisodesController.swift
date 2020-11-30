@@ -39,35 +39,14 @@ class EpisodesController: UITableViewController {
   // MARK: - Parser
   fileprivate func fetchEpisodes() {
     guard let feedUrl = podcast?.feedUrl else { return }
-    let secureFeedUrl = feedUrl.contains("https") ? feedUrl : feedUrl.replacingOccurrences(of: "http", with: "https")
     
-    guard let url = URL(string: secureFeedUrl) else { return }
-    let parser = FeedParser(URL: url)
-    
-    parser?.parseAsync(result: { result in
-      print("Successfully parse feed:", result.isSuccess)
+    APIService.shared.fetchEpisodes(feedUrl: feedUrl) { episodes in
+      self.episodes = episodes
       
-      switch result {
-      case let .rss(feed):
-        var episodes = [Episode]()
-        
-        feed.items?.forEach({ feedItem in
-          let episode = Episode(feedItem: feedItem)
-          episodes.append(episode)
-        })
-        self.episodes = episodes
-        
-        DispatchQueue.main.async {
-          self.tableView.reloadData()
-        }
-        break
-      case let .failure(error):
-        print("Failed to parse feed:", error)
-        break
-      default:
-        print("Found a feed....")
+      DispatchQueue.main.async {
+        self.tableView.reloadData()
       }
-    })
+    }
   }
   
   // MARK: - UITableViewDataSource Methods
