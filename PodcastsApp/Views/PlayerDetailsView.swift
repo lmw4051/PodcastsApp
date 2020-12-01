@@ -20,6 +20,9 @@ class PlayerDetailsView: UIView {
       
       setupNowPlayingInfo()
       
+      // Position in didSet can prevent player stops playing when the app is launched
+      setupAudioSession()
+      
       playEpisode()
       
       guard let url = URL(string: episode.imageUrl ?? "") else { return }
@@ -137,20 +140,11 @@ class PlayerDetailsView: UIView {
     super.awakeFromNib()
     
     setupRemoteControl()
-    
-    setupAudioSession()
-    
     setupGestures()
-    
+    setupInterruptionObserver()
     observePlayerCurrentTime()
     
-    let time = CMTimeMake(value: 1, timescale: 3)
-    let times = [NSValue(time: time)]
-    
-    player.addBoundaryTimeObserver(forTimes: times, queue: .main) { [weak self] in
-      print("Episode started playing")
-      self?.enlargeEpisodeImageView()
-    }
+    observeBoundaryTime()
   }
   
   static func initFromNib() -> PlayerDetailsView {
@@ -190,24 +184,9 @@ class PlayerDetailsView: UIView {
       self?.currentTimeLabel.text = time.toDisplayString()
       let durationTime = self?.player.currentItem?.duration
       self?.durationLabel.text = durationTime?.toDisplayString()
-      
-      self?.setupLockScreenCurrentTime()
-      
+
       self?.updateCurrentTimeSlider()
     }
-  }
-  
-  fileprivate func setupLockScreenCurrentTime() {
-    var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo
-    
-    guard let currentItem = player.currentItem else { return }
-    let durationInSeconds = CMTimeGetSeconds(currentItem.duration)
-    let elapsedTime = CMTimeGetSeconds(player.currentTime())
-        
-    nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = durationInSeconds
-    nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
-    
-    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
   }
   
   fileprivate func updateCurrentTimeSlider() {
@@ -243,6 +222,8 @@ class PlayerDetailsView: UIView {
       self.player.play()
       self.playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
       self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      
+      self.setupElapsedTime(playbackRate: 1)
       return .success
     }
     
@@ -251,6 +232,8 @@ class PlayerDetailsView: UIView {
       self.player.pause()
       self.playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
       self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      
+      self.setupElapsedTime(playbackRate: 0)
       return .success
     }
     
@@ -272,6 +255,33 @@ class PlayerDetailsView: UIView {
     MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
   }
   
+  fileprivate func setupElapsedTime(playbackRate: Float) {
+    let elapsedTime = CMTimeGetSeconds(player.currentTime())
+    MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
+    MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = playbackRate
+  }
+  
+  fileprivate func observeBoundaryTime() {
+    let time = CMTimeMake(value: 1, timescale: 3)
+    let times = [NSValue(time: time)]
+    
+    player.addBoundaryTimeObserver(forTimes: times, queue: .main) { [weak self] in
+      print("Episode started playing")
+      self?.enlargeEpisodeImageView()
+      self?.setupLockscreenDuration()
+    }
+  }
+  
+  fileprivate func setupLockscreenDuration() {
+    guard let duration = player.currentItem?.duration else { return }
+    let durationSeconds = CMTimeGetSeconds(duration)
+    MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = durationSeconds
+  }
+  
+  fileprivate func setupInterruptionObserver() {
+    NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: .AVCaptureSessionInterruptionEnded, object: nil)
+  }
+    
   // MARK: - Selector Methods
   @objc func handlePlayPause() {
     print("Trying to play and pause")
@@ -280,11 +290,13 @@ class PlayerDetailsView: UIView {
       playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
       miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
       enlargeEpisodeImageView()
+      self.setupElapsedTime(playbackRate: 1)
     } else {
       player.pause()
       playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
       miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
       shrinkEpisodeImageView()
+      self.setupElapsedTime(playbackRate: 0)
     }
   }
   
@@ -362,5 +374,28 @@ class PlayerDetailsView: UIView {
     self.episode = prevEpisode
     
     return .success
+  }
+  
+  @objc fileprivate func handleInterruption(notification: Notification) {
+    print("handleInterruption")
+    
+    guard let userInfo = notification.userInfo else { return }
+    guard let type = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt else { return }
+    
+    if type == AVAudioSession.InterruptionType.began.rawValue {
+      print("Interruption began")
+      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+    } else {
+      print("Interruption ended")
+      
+      guard let options = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+      
+      if options == AVAudioSession.InterruptionOptions.shouldResume.rawValue {
+        player.play()
+        playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+        miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      }
+    }
   }
 }
