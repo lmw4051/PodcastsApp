@@ -1,9 +1,9 @@
 //
 //  PlayerDetailsView.swift
-//  PodcastsApp
+//  PodcastsCourseLBTA
 //
-//  Created by David on 2020/12/1.
-//  Copyright © 2020 David. All rights reserved.
+//  Created by Brian Voong on 2/28/18.
+//  Copyright © 2018 Brian Voong. All rights reserved.
 //
 
 import UIKit
@@ -28,25 +28,23 @@ class PlayerDetailsView: UIView {
     return avPlayer
   }()
   
-  // MARK: - Helper Methods
-  fileprivate func playEpisode() {
-    print("playEpisode:", episode.streamUrl)
-    
-    guard let url = URL(string: episode.streamUrl) else { return }
-    let playerItem = AVPlayerItem(url: url)
-    player.replaceCurrentItem(with: playerItem)
-    player.play()
+  fileprivate let shrunkenTransform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+  
+  // MARK: - IB Actions and Outlets
+  @IBOutlet weak var currentTimeSlider: UISlider!
+  @IBOutlet weak var durationLabel: UILabel!
+  @IBOutlet weak var currentTimeLabel: UILabel!
+  @IBAction func handleDismiss(_ sender: Any) {
+    self.removeFromSuperview()
   }
   
-  // MARK: - IBOutlets
-  @IBOutlet weak var authorLabel: UILabel!
-  
-  @IBOutlet weak var titleLabel: UILabel! {
+  @IBOutlet weak var episodeImageView: UIImageView! {
     didSet {
-      titleLabel.numberOfLines = 2
+      episodeImageView.layer.cornerRadius = 5
+      episodeImageView.clipsToBounds = true
+      episodeImageView.transform = shrunkenTransform
     }
   }
-  @IBOutlet weak var episodeImageView: UIImageView!
   
   @IBOutlet weak var playPauseButton: UIButton! {
     didSet {
@@ -55,20 +53,58 @@ class PlayerDetailsView: UIView {
     }
   }
   
-  // MARK: - Selector Methods
-  @objc func handlePlayPause() {
-    print("handlePlayPause")
-    if player.timeControlStatus == .paused {
-      player.play()
-      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-    } else {
-      player.pause()
-      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+  @IBOutlet weak var authorLabel: UILabel!
+  @IBOutlet weak var titleLabel: UILabel! {
+    didSet {
+      titleLabel.numberOfLines = 2
     }
   }
   
-  // MARK: - IBActions
-  @IBAction func handleDismiss(_ sender: Any) {
-    self.removeFromSuperview()
+  // MARK: - View Life Cycle
+  override func awakeFromNib() {
+    super.awakeFromNib()
+    
+    let time = CMTimeMake(value: 1, timescale: 3)
+    let times = [NSValue(time: time)]
+    player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
+      print("Episode started playing")
+      self.enlargeEpisodeImageView()
+    }
+  }
+  
+  // MARK: - Helper Methods
+  fileprivate func playEpisode() {
+    print("Trying to play episode at url:", episode.streamUrl)
+    
+    guard let url = URL(string: episode.streamUrl) else { return }
+    let playerItem = AVPlayerItem(url: url)
+    player.replaceCurrentItem(with: playerItem)
+    player.play()
+  }
+  
+  fileprivate func enlargeEpisodeImageView() {
+    UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+      self.episodeImageView.transform = .identity
+    })
+  }
+  
+  fileprivate func shrinkEpisodeImageView() {
+    UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseOut, animations: {      
+      self.episodeImageView.transform = self.shrunkenTransform
+    })
+  }
+  
+  // MARK: - Selector Methods
+  @objc func handlePlayPause() {
+    print("Trying to play and pause")
+    if player.timeControlStatus == .paused {
+      player.play()
+      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      enlargeEpisodeImageView()
+    } else {
+      player.pause()
+      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      shrinkEpisodeImageView()
+    }
   }
 }
