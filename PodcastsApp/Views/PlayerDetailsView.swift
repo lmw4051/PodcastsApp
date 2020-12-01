@@ -59,7 +59,8 @@ class PlayerDetailsView: UIView {
   
   // MARK: - IBAction Methods
   @IBAction func handleDismiss(_ sender: Any) {
-    self.removeFromSuperview()
+    let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+    mainTabBarController?.minimizePlayerDetails()
   }
   
   @IBAction func handleCurrentTimeSliderChange(_ sender: Any) {
@@ -87,6 +88,8 @@ class PlayerDetailsView: UIView {
   // MARK: - View Life Cycle
   override func awakeFromNib() {
     super.awakeFromNib()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMaximize)))
     
     observePlatyerCurrentTime()
     
@@ -167,5 +170,10 @@ class PlayerDetailsView: UIView {
       playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
       shrinkEpisodeImageView()
     }
+  }
+  
+  @objc func handleTapMaximize() {
+    let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+    mainTabBarController?.maximizePlayerDetails(episode: nil)
   }
 }

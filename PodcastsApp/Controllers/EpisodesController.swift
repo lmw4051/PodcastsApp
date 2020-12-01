@@ -64,12 +64,9 @@ class EpisodesController: UITableViewController {
   // MARK: - UITableViewDelegate Methods
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let episode = self.episodes[indexPath.row]
-    let window = UIApplication.shared.keyWindow
     
-    let playerDetailsView = PlayerDetailsView.initFromNib()
-    playerDetailsView.episode = episode
-    playerDetailsView.frame = self.view.frame
-    window?.addSubview(playerDetailsView)
+    let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+    mainTabBarController?.maximizePlayerDetails(episode: episode)
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
