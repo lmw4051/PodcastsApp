@@ -29,6 +29,7 @@
 		54722BD02575B79100CB8A1D /* PlayerDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 54722BCF2575B79100CB8A1D /* PlayerDetailsView.xib */; };
 		54722BD22575B7AA00CB8A1D /* PlayerDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54722BD12575B7AA00CB8A1D /* PlayerDetailsView.swift */; };
 		54722BD42575DE7800CB8A1D /* CMTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54722BD32575DE7800CB8A1D /* CMTime.swift */; };
+		54722BD62575F75200CB8A1D /* PodcastsSearchingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 54722BD52575F75200CB8A1D /* PodcastsSearchingView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		54722BCF2575B79100CB8A1D /* PlayerDetailsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerDetailsView.xib; sourceTree = "<group>"; };
 		54722BD12575B7AA00CB8A1D /* PlayerDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDetailsView.swift; sourceTree = "<group>"; };
 		54722BD32575DE7800CB8A1D /* CMTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMTime.swift; sourceTree = "<group>"; };
+		54722BD52575F75200CB8A1D /* PodcastsSearchingView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastsSearchingView.xib; sourceTree = "<group>"; };
 		5E74DB4D5A69E5351C721DE4 /* Pods_PodcastsApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PodcastsApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBADC45FBD0F3A8C3FEC4004 /* Pods-PodcastsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodcastsApp.debug.xcconfig"; path = "Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -154,6 +156,7 @@
 				54722BC6257502D400CB8A1D /* EpisodeCell.swift */,
 				54722BCF2575B79100CB8A1D /* PlayerDetailsView.xib */,
 				54722BD12575B7AA00CB8A1D /* PlayerDetailsView.swift */,
+				54722BD52575F75200CB8A1D /* PodcastsSearchingView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 			files = (
 				54722BD02575B79100CB8A1D /* PlayerDetailsView.xib in Resources */,
 				54722B9D2574B59400CB8A1D /* LaunchScreen.storyboard in Resources */,
+				54722BD62575F75200CB8A1D /* PodcastsSearchingView.xib in Resources */,
 				54722B9A2574B59400CB8A1D /* Assets.xcassets in Resources */,
 				54722BC5257502B900CB8A1D /* EpisodeCell.xib in Resources */,
 				54722BBD2574F16800CB8A1D /* PodcastCell.xib in Resources */,

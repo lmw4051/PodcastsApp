@@ -15,6 +15,10 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   let cellId = "CellId"  
   let searchController = UISearchController(searchResultsController: nil)
   
+  var timer: Timer?
+  
+  var podcastSearchView = Bundle.main.loadNibNamed("PodcastsSearchingView", owner: self, options: nil)?.first as? UIView
+  
   // MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -40,10 +44,16 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   
   // MARK: - UISearchBarDelegate Methods
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    APIService.shared.fetchPodcasts(searchText: searchText) { podcasts in
-      self.podcasts = podcasts
-      self.tableView.reloadData()
-    }        
+    podcasts = []
+    tableView.reloadData()
+    
+    timer?.invalidate()
+    timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { timer in
+      APIService.shared.fetchPodcasts(searchText: searchText) { podcasts in
+        self.podcasts = podcasts
+        self.tableView.reloadData()
+      }
+    })    
   }
   
   // MARK: - UITableViewDataSource Methods
@@ -79,7 +89,15 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
   }
   
   override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return self.podcasts.count > 0 ? 0 : 250
+    return self.podcasts.isEmpty && searchController.searchBar.text?.isEmpty == true ? 250 : 0
+  }
+  
+  override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    return podcastSearchView
+  }
+  
+  override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    return podcasts.isEmpty && searchController.searchBar.text?.isEmpty == false ? 200 : 0
   }
 }
 
