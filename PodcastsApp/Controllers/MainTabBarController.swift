@@ -74,10 +74,6 @@ class MainTabBarController: UITabBarController {
   
   fileprivate func setupPlayerDetailsView() {
     print("setupPlayerDetailsView")
-    
-    let playerDetailsView = PlayerDetailsView.initFromNib()
-    playerDetailsView.backgroundColor = .red
-    
     view.insertSubview(playerDetailsView, belowSubview: tabBar)
     
     // Enables AutoLayout
