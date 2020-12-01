@@ -140,7 +140,7 @@ class PlayerDetailsView: UIView {
     
     setupGestures()
     
-    observePlatyerCurrentTime()
+    observePlayerCurrentTime()
     
     let time = CMTimeMake(value: 1, timescale: 3)
     let times = [NSValue(time: time)]
@@ -181,7 +181,7 @@ class PlayerDetailsView: UIView {
     })
   }
   
-  fileprivate func observePlatyerCurrentTime() {
+  fileprivate func observePlayerCurrentTime() {
     let interval = CMTimeMake(value: 1, timescale: 2)
     
     player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
@@ -191,7 +191,7 @@ class PlayerDetailsView: UIView {
       
       self?.setupLockScreenCurrentTime()
       
-      self?.updateCurrentTimeSlier()
+      self?.updateCurrentTimeSlider()
     }
   }
   
@@ -208,7 +208,7 @@ class PlayerDetailsView: UIView {
     MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
   }
   
-  fileprivate func updateCurrentTimeSlier() {
+  fileprivate func updateCurrentTimeSlider() {
     let currentTimeSeconds = CMTimeGetSeconds(player.currentTime())
     let durationSeconds = CMTimeGetSeconds(player.currentItem?.duration ?? CMTimeMake(value: 1, timescale: 1))
     let percentage = currentTimeSeconds / durationSeconds
