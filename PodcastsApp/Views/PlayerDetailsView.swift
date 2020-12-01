@@ -18,11 +18,24 @@ class PlayerDetailsView: UIView {
       miniTitleLabel.text = episode.title
       authorLabel.text = episode.author
       
+      setupNowPlayingInfo()
+      
       playEpisode()
       
       guard let url = URL(string: episode.imageUrl ?? "") else { return }
       episodeImageView.sd_setImage(with: url)
-      miniEpisodeImageView.sd_setImage(with: url)
+            
+      miniEpisodeImageView.sd_setImage(with: url) { (image, _, _, _) in
+        // Lock Screen Artwork Setup
+        guard let image = image else { return }
+
+        var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo
+        let artwork = MPMediaItemArtwork(boundsSize: image.size) { _ -> UIImage in
+          return image
+        }
+        nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+      }
     }
   }
   
@@ -176,8 +189,23 @@ class PlayerDetailsView: UIView {
       let durationTime = self?.player.currentItem?.duration
       self?.durationLabel.text = durationTime?.toDisplayString()
       
+      self?.setupLockScreenCurrentTime()
+      
       self?.updateCurrentTimeSlier()
     }
+  }
+  
+  fileprivate func setupLockScreenCurrentTime() {
+    var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo
+    
+    guard let currentItem = player.currentItem else { return }
+    let durationInSeconds = CMTimeGetSeconds(currentItem.duration)
+    let elapsedTime = CMTimeGetSeconds(player.currentTime())
+        
+    nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = durationInSeconds
+    nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
+    
+    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
   }
   
   fileprivate func updateCurrentTimeSlier() {
@@ -231,6 +259,14 @@ class PlayerDetailsView: UIView {
             
       return .success
     }
+  }
+  
+  fileprivate func setupNowPlayingInfo() {
+    var nowPlayingInfo = [String: Any]()
+    nowPlayingInfo[MPMediaItemPropertyTitle] = episode.title
+    nowPlayingInfo[MPMediaItemPropertyArtist] = episode.author
+        
+    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
   }
   
   // MARK: - Selector Methods
