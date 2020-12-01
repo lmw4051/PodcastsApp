@@ -30,13 +30,10 @@ class PlayerDetailsView: UIView {
   
   fileprivate let shrunkenTransform = CGAffineTransform(scaleX: 0.7, y: 0.7)
   
-  // MARK: - IB Actions and Outlets
+  // MARK: - IBOutlets
   @IBOutlet weak var currentTimeSlider: UISlider!
   @IBOutlet weak var durationLabel: UILabel!
   @IBOutlet weak var currentTimeLabel: UILabel!
-  @IBAction func handleDismiss(_ sender: Any) {
-    self.removeFromSuperview()
-  }
   
   @IBOutlet weak var episodeImageView: UIImageView! {
     didSet {
@@ -60,9 +57,16 @@ class PlayerDetailsView: UIView {
     }
   }
   
+  // MARK: - IBActions
+  @IBAction func handleDismiss(_ sender: Any) {
+    self.removeFromSuperview()
+  }
+  
   // MARK: - View Life Cycle
   override func awakeFromNib() {
     super.awakeFromNib()
+    
+    observePlatyerCurrentTime()
     
     let time = CMTimeMake(value: 1, timescale: 3)
     let times = [NSValue(time: time)]
@@ -92,6 +96,15 @@ class PlayerDetailsView: UIView {
     UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseOut, animations: {      
       self.episodeImageView.transform = self.shrunkenTransform
     })
+  }
+  
+  fileprivate func observePlatyerCurrentTime() {
+    let interval = CMTimeMake(value: 1, timescale: 2)
+    player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
+      self.currentTimeLabel.text = time.toDisplayString()
+      let durationTime = self.player.currentItem?.duration
+      self.durationLabel.text = durationTime?.toDisplayString()            
+    }
   }
   
   // MARK: - Selector Methods
