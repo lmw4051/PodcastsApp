@@ -12,6 +12,7 @@ class MainTabBarController: UITabBarController {
   // MARK: - Instance Properties
   var maximizedTopAnchorConstraint: NSLayoutConstraint!
   var minimizedTopAnchorConstraint: NSLayoutConstraint!
+  var bottomAnchorConstraint: NSLayoutConstraint!
   
   let playerDetailsView = PlayerDetailsView.initFromNib()
   
@@ -28,7 +29,12 @@ class MainTabBarController: UITabBarController {
   func minimizePlayerDetails() {
     print("minimizePlayerDetails")
     maximizedTopAnchorConstraint.isActive = false
+    // Set bottomAnchorConstraint.constant = view.frame.height
+    // in the middle to prevent AutoLayout conflicts warning
+    bottomAnchorConstraint.constant = view.frame.height
     minimizedTopAnchorConstraint.isActive = true
+    
+    // Set constant to view.frame.height for avoiding transparency
     
     UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
       self.view.layoutIfNeeded()
@@ -46,10 +52,16 @@ class MainTabBarController: UITabBarController {
   
   func maximizePlayerDetails(episode: Episode?) {
     print("maximizePlayerDetails")
+    // Set minimizedTopAnchorConstraint.isActive = false first
+    // to present AutoLayout Conflicts warning
+    minimizedTopAnchorConstraint.isActive = false
     maximizedTopAnchorConstraint.isActive = true
     // Set constant = 0 to show the playerDetailsView
     maximizedTopAnchorConstraint.constant = 0
-    minimizedTopAnchorConstraint.isActive = false
+    
+    // Set constant to 0 in order to reset to the original one
+    // instead of further down.
+    bottomAnchorConstraint.constant = 0
     
     if episode != nil {
       playerDetailsView.episode = episode
@@ -88,12 +100,16 @@ class MainTabBarController: UITabBarController {
     // Set playerDetailsView from the very bottom by setting constant = view.frame.height
     maximizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
     maximizedTopAnchorConstraint.isActive = true
+        
+    // Setting bottomAnchor constant to view.frame.height will increase height further down
+    // thus prevent the transparency
+    bottomAnchorConstraint = playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
+    bottomAnchorConstraint.isActive = true
     
     minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
     //    minimizedTopAnchorConstraint.isActive = true
     
     playerDetailsView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-    playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
   }
   

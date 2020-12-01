@@ -33,6 +33,8 @@ class PlayerDetailsView: UIView {
   
   fileprivate let shrunkenTransform = CGAffineTransform(scaleX: 0.7, y: 0.7)
   
+  var panGesture: UIPanGestureRecognizer!
+  
   // MARK: - IBOutlets
   @IBOutlet weak var currentTimeSlider: UISlider!
   @IBOutlet weak var durationLabel: UILabel!
@@ -81,8 +83,7 @@ class PlayerDetailsView: UIView {
   
   // MARK: - IBAction Methods
   @IBAction func handleDismiss(_ sender: Any) {
-    let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
-    mainTabBarController?.minimizePlayerDetails()
+    UIApplication.mainTabBarController()?.minimizePlayerDetails()
   }
   
   @IBAction func handleCurrentTimeSliderChange(_ sender: Any) {
@@ -108,11 +109,18 @@ class PlayerDetailsView: UIView {
   
   
   // MARK: - View Life Cycle
+  fileprivate func setupGestures() {
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMaximize)))
+    panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+    miniPlayerView.addGestureRecognizer(panGesture)
+    
+    maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismissalPan)))
+  }
+  
   override func awakeFromNib() {
     super.awakeFromNib()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapMaximize)))
-    addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan)))
+    setupGestures()
     
     observePlatyerCurrentTime()
     
@@ -197,28 +205,21 @@ class PlayerDetailsView: UIView {
     }
   }
   
-  @objc func handleTapMaximize() {
-    let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
-    mainTabBarController?.maximizePlayerDetails(episode: nil)
-  }
-  
-  @objc func handlePan(gesture: UIPanGestureRecognizer) {
-    if gesture.state == .began {
-      print("Began")
-    } else if gesture.state == .changed {
-      let translation = gesture.translation(in: self.superview)
-      self.transform = CGAffineTransform(translationX: 0, y: translation.y)
-      
-      self.miniPlayerView.alpha = 1 + translation.y / 200
-      self.maximizedStackView.alpha = -translation.y / 200
-      
-      print(translation.y)
+  @objc func handleDismissalPan(gesture: UIPanGestureRecognizer) {
+    print("handleDismissalPan")
+    
+    if gesture.state == .changed {
+      let translation = gesture.translation(in: superview)
+      maximizedStackView.transform = CGAffineTransform(translationX: 0, y: translation.y)
     } else if gesture.state == .ended {
+      let translation = gesture.translation(in: superview)
+      
       UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-        self.transform = .identity
+        self.maximizedStackView.transform = .identity
         
-        self.miniPlayerView.alpha = 1
-        self.maximizedStackView.alpha = 0
+        if translation.y > 100 {
+          UIApplication.mainTabBarController()?.minimizePlayerDetails()
+        }
       })
     }
   }
