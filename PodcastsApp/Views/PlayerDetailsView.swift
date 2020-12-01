@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import MediaPlayer
 
 class PlayerDetailsView: UIView {
   // MARK: - Instance Properties
@@ -16,7 +17,7 @@ class PlayerDetailsView: UIView {
       titleLabel.text = episode.title
       miniTitleLabel.text = episode.title
       authorLabel.text = episode.author
-
+      
       playEpisode()
       
       guard let url = URL(string: episode.imageUrl ?? "") else { return }
@@ -120,13 +121,17 @@ class PlayerDetailsView: UIView {
   override func awakeFromNib() {
     super.awakeFromNib()
     
+    setupRemoteControl()
+    
+    setupAudioSession()
+    
     setupGestures()
     
     observePlatyerCurrentTime()
     
     let time = CMTimeMake(value: 1, timescale: 3)
     let times = [NSValue(time: time)]
-        
+    
     player.addBoundaryTimeObserver(forTimes: times, queue: .main) { [weak self] in
       print("Episode started playing")
       self?.enlargeEpisodeImageView()
@@ -165,7 +170,7 @@ class PlayerDetailsView: UIView {
   
   fileprivate func observePlatyerCurrentTime() {
     let interval = CMTimeMake(value: 1, timescale: 2)
-        
+    
     player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
       self?.currentTimeLabel.text = time.toDisplayString()
       let durationTime = self?.player.currentItem?.duration
@@ -187,6 +192,45 @@ class PlayerDetailsView: UIView {
     let fifteenSeconds = CMTimeMake(value: delta, timescale: 1)
     let seekTime = CMTimeAdd(player.currentTime(), fifteenSeconds)
     player.seek(to: seekTime)
+  }
+  
+  fileprivate func setupAudioSession() {
+    do {
+      try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+      try AVAudioSession.sharedInstance().setActive(true)
+    } catch let sessionErr {
+      print("Failed to activate session:", sessionErr)
+    }
+  }
+  
+  fileprivate func setupRemoteControl() {
+    UIApplication.shared.beginReceivingRemoteControlEvents()
+    
+    let commandCenter = MPRemoteCommandCenter.shared()
+    
+    MPRemoteCommandCenter.shared().playCommand.isEnabled = true
+    MPRemoteCommandCenter.shared().playCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
+      self.player.play()
+      self.playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      return .success
+    }
+    
+    commandCenter.pauseCommand.isEnabled = true
+    commandCenter.pauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
+      self.player.pause()
+      self.playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      return .success
+    }
+    
+    commandCenter.togglePlayPauseCommand.isEnabled = true
+    commandCenter.togglePlayPauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
+      
+      self.handlePlayPause()
+            
+      return .success
+    }
   }
   
   // MARK: - Selector Methods
