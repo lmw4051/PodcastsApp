@@ -40,6 +40,9 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="36" id="80W-nx-soz"/>
                             </constraints>
+                            <connections>
+                                <action selector="handleCurrentTimeSliderChange:" destination="eBc-0L-ZxG" eventType="valueChanged" id="1gZ-23-gKH"/>
+                            </connections>
                         </slider>
                         <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qYA-DW-X9y">
                             <rect key="frame" x="0.0" y="461" width="366" height="22"/>
@@ -93,6 +96,9 @@
                                     </constraints>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button" image="rewind15"/>
+                                    <connections>
+                                        <action selector="handleRewind:" destination="eBc-0L-ZxG" eventType="touchUpInside" id="853-7J-nF9"/>
+                                    </connections>
                                 </button>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eW7-1c-mXB">
                                     <rect key="frame" x="105.5" y="0.0" width="50" height="215.5"/>
@@ -117,6 +123,9 @@
                                     </constraints>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button" image="fastforward15"/>
+                                    <connections>
+                                        <action selector="handleFastForward:" destination="eBc-0L-ZxG" eventType="touchUpInside" id="Pdd-u5-Kfb"/>
+                                    </connections>
                                 </button>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zqi-Iu-cNX">
                                     <rect key="frame" x="316" y="0.0" width="50" height="215.5"/>
@@ -144,6 +153,9 @@
                                 </imageView>
                                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="nsi-o5-u46">
                                     <rect key="frame" x="32" y="0.0" width="302" height="35"/>
+                                    <connections>
+                                        <action selector="handleVolumeChange:" destination="eBc-0L-ZxG" eventType="valueChanged" id="C6Q-rE-LCu"/>
+                                    </connections>
                                 </slider>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="max_volume" translatesAutoresizingMaskIntoConstraints="NO" id="uyM-NJ-lID">
                                     <rect key="frame" x="332" y="0.0" width="34" height="34"/>
