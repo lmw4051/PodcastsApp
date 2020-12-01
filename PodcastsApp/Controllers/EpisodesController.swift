@@ -64,8 +64,7 @@ class EpisodesController: UITableViewController {
   // MARK: - UITableViewDelegate Methods
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let episode = self.episodes[indexPath.row]
-    
-    UIApplication.mainTabBarController()?.maximizePlayerDetails(episode: episode)
+    UIApplication.mainTabBarController()?.maximizePlayerDetails(episode: episode, playlistEpisodes: self.episodes)        
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

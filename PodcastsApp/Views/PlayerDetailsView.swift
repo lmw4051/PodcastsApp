@@ -49,6 +49,8 @@ class PlayerDetailsView: UIView {
   
   var panGesture: UIPanGestureRecognizer!
   
+  var playlistEpisodes = [Episode]()
+  
   // MARK: - IBOutlets
   @IBOutlet weak var currentTimeSlider: UISlider!
   @IBOutlet weak var durationLabel: UILabel!
@@ -254,11 +256,12 @@ class PlayerDetailsView: UIView {
     
     commandCenter.togglePlayPauseCommand.isEnabled = true
     commandCenter.togglePlayPauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-      
       self.handlePlayPause()
-            
       return .success
     }
+    
+    commandCenter.nextTrackCommand.addTarget(self, action: #selector(handleNextTrack))
+    commandCenter.previousTrackCommand.addTarget(self, action: #selector(handlePrevTrack))
   }
   
   fileprivate func setupNowPlayingInfo() {
@@ -302,5 +305,62 @@ class PlayerDetailsView: UIView {
         }
       })
     }
+  }
+  
+  // Must return MPRemoteCommandHandlerStatus in iOS 13
+  @objc fileprivate func handleNextTrack() -> MPRemoteCommandHandlerStatus {
+    if playlistEpisodes.count == 0 {
+      return .success
+    }
+    
+    let currentEpisodeIndex = playlistEpisodes.index { episode -> Bool in
+      return self.episode.title == episode.title && self.episode.author == episode.author
+    }
+    
+    guard let index = currentEpisodeIndex else {
+      return .success
+    }
+    
+    let nextEpisode: Episode
+    
+    if index == playlistEpisodes.count - 1 {
+      nextEpisode = playlistEpisodes[0]
+    } else {
+      nextEpisode = playlistEpisodes[index + 1]
+    }
+    
+    self.episode = nextEpisode
+    
+    return .success
+  }
+  
+  @objc fileprivate func handlePrevTrack() -> MPRemoteCommandHandlerStatus {
+    // 1. Check if playlistEpidoes.count == 0 then return
+    // 2. find out current episode index
+    // 3. if episode index is 0, wrap to end of list somehow...
+    // otherwise play episode index - 1
+    
+    if playlistEpisodes.isEmpty {
+      return .success
+    }
+    
+    let currentEpisodeIndex = playlistEpisodes.index { episode -> Bool in
+      return self.episode.title == episode.title && self.episode.author == episode.author
+    }
+    
+    guard let index = currentEpisodeIndex else { return .success }
+    
+    let prevEpisode: Episode
+    
+    if index == 0 {
+      let count = playlistEpisodes.count
+      prevEpisode = playlistEpisodes[count - 1]
+    } else {
+      prevEpisode = playlistEpisodes[index - 1]
+    }
+    
+    self.episode = prevEpisode
+    
+    return .success
   }
 }
