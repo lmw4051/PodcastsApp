@@ -35,7 +35,7 @@
                                 <constraint firstAttribute="width" secondItem="AW1-cV-9GI" secondAttribute="height" id="SRG-OE-1Ha"/>
                             </constraints>
                         </imageView>
-                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="4hh-Za-mxh">
+                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="4hh-Za-mxh">
                             <rect key="frame" x="-2" y="420" width="370" height="37"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="36" id="80W-nx-soz"/>

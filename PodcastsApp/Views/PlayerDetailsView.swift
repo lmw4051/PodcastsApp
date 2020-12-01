@@ -103,8 +103,18 @@ class PlayerDetailsView: UIView {
     player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
       self.currentTimeLabel.text = time.toDisplayString()
       let durationTime = self.player.currentItem?.duration
-      self.durationLabel.text = durationTime?.toDisplayString()            
+      self.durationLabel.text = durationTime?.toDisplayString()
+      
+      self.updateCurrentTimeSlier()
     }
+  }
+  
+  fileprivate func updateCurrentTimeSlier() {
+    let currentTimeSeconds = CMTimeGetSeconds(player.currentTime())
+    let durationSeconds = CMTimeGetSeconds(player.currentItem?.duration ?? CMTimeMake(value: 1, timescale: 1))
+    let percentage = currentTimeSeconds / durationSeconds
+    
+    self.currentTimeSlider.value = Float(percentage)
   }
   
   // MARK: - Selector Methods
