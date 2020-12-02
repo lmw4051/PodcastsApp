@@ -51,4 +51,19 @@ extension UserDefaults {
     }
     return []
   }
+  
+  func deleteEpisode(episode: Episode) {
+    let savedEpisodes = downloadedEpisodes()
+    let filteredEpisodes = savedEpisodes.filter { e -> Bool in
+      // Should use episode.collectionId which is a safer for deletion
+      return e.title != episode.title
+    }
+    
+    do {
+      let data = try JSONEncoder().encode(filteredEpisodes)
+      UserDefaults.standard.set(data, forKey: UserDefaults.downloadedEpisodesKey)
+    } catch let encodeError {
+      print("Failed to encode episode:", encodeError)
+    }
+  }
 }
