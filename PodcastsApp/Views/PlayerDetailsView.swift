@@ -159,8 +159,29 @@ class PlayerDetailsView: UIView {
   fileprivate func playEpisode() {
     print("Trying to play episode at url:", episode.streamUrl)
     
-    guard let url = URL(string: episode.streamUrl) else { return }
-    let playerItem = AVPlayerItem(url: url)
+    if episode.fileUrl != nil {
+      playEpisodeUsingFileUrl()
+    } else {
+      print("Tring to play episode at url:", episode.streamUrl)
+      guard let url = URL(string: episode.streamUrl) else { return }
+      let playerItem = AVPlayerItem(url: url)
+      player.replaceCurrentItem(with: playerItem)
+      player.play()
+    }
+  }
+  
+  fileprivate func playEpisodeUsingFileUrl() {
+    print("Attempt to play episode with file url:", episode.fileUrl ?? "")
+    
+    guard let fileURL = URL(string: episode.fileUrl ?? "") else { return }
+    let  fileName = fileURL.lastPathComponent
+    
+    guard var trueLocation = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+    
+    trueLocation.appendPathComponent(fileName)
+    print("trueLocation.absoluteString:", trueLocation.absoluteString)
+    
+    let playerItem = AVPlayerItem(url: trueLocation)
     player.replaceCurrentItem(with: playerItem)
     player.play()
   }
@@ -325,7 +346,7 @@ class PlayerDetailsView: UIView {
       return .success
     }
     
-    let currentEpisodeIndex = playlistEpisodes.index { episode -> Bool in
+    let currentEpisodeIndex = playlistEpisodes.firstIndex { episode -> Bool in
       return self.episode.title == episode.title && self.episode.author == episode.author
     }
     
@@ -356,7 +377,7 @@ class PlayerDetailsView: UIView {
       return .success
     }
     
-    let currentEpisodeIndex = playlistEpisodes.index { episode -> Bool in
+    let currentEpisodeIndex = playlistEpisodes.firstIndex { episode -> Bool in
       return self.episode.title == episode.title && self.episode.author == episode.author
     }
     

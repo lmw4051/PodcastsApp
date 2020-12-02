@@ -136,6 +136,8 @@ class EpisodesController: UITableViewController {
       print("Downloading episode info UserDefaults")
       let episode = self.episodes[indexPath.row]
       UserDefaults.standard.downloadEpisode(episode: episode)
+      
+      APIService.shared.downloadEpisode(episode: episode)
     }
     
     return [downloadAction]
