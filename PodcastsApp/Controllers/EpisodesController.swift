@@ -22,8 +22,6 @@ class EpisodesController: UITableViewController {
   
   fileprivate let cellId = "cellId"
   
-  let favoritedPodcastKey = "favoritedPodcastKey"
-  
   // MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -50,20 +48,26 @@ class EpisodesController: UITableViewController {
     
     guard let podcast = self.podcast else { return }
     
+//    // fetch our saved podcasts first
+//    guard let savedPodcastsData = UserDefaults.standard.data(forKey: favoritedPodcastKey) else { return }
+//    guard let savedPodcasts = NSKeyedUnarchiver.unarchiveObject(with: savedPodcastsData) as? [Podcast] else { return }
+    
     // Transform Podcast into Data
-    let data = NSKeyedArchiver.archivedData(withRootObject: podcast)
-    UserDefaults.standard.set(data, forKey: favoritedPodcastKey)
+    var listOfPodcasts = UserDefaults.standard.savedPodcasts()
+    listOfPodcasts.append(podcast)
+    let data = NSKeyedArchiver.archivedData(withRootObject: listOfPodcasts)
+    UserDefaults.standard.set(data, forKey: UserDefaults.favoritedPodcastKey)
   }
   
   @objc func handleFetchSavedPodcasts() {
-    print("handleFetchSavedPodcasts")
-    let value = UserDefaults.standard.value(forKey: favoritedPodcastKey) as? String
-    print(value ?? "")
-    
     // Get the Podcast object from NSUserDefaults
-    guard let data = UserDefaults.standard.data(forKey: favoritedPodcastKey) else { return }
-    let podcast = NSKeyedUnarchiver.unarchiveObject(with: data) as? Podcast
-    print(podcast?.trackName, podcast?.artistName)
+    guard let data = UserDefaults.standard.data(forKey: UserDefaults.favoritedPodcastKey) else { return }
+    
+    let savedPodcasts = NSKeyedUnarchiver.unarchiveObject(with: data) as? [Podcast]
+    
+    savedPodcasts?.forEach({ podcast in
+      print(podcast.trackName ?? "")
+    })
   }
   
   // MARK: - Parser

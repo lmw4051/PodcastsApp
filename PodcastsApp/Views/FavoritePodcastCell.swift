@@ -10,6 +10,17 @@ import UIKit
 
 class FavoritePodcastCell: UICollectionViewCell {
   // MARK: - Instance Properties
+  
+  var podcast: Podcast! {
+    didSet {
+      nameLabel.text = podcast.trackName
+      artistNameLabel.text = podcast.artistName
+      
+      let url = URL(string: podcast.artworkUrl600 ?? "") 
+      imageView.sd_setImage(with: url)
+    }
+  }
+  
   let imageView = UIImageView(image: #imageLiteral(resourceName: "appicon"))
   let nameLabel = UILabel()
   let artistNameLabel = UILabel()
@@ -31,7 +42,7 @@ class FavoritePodcastCell: UICollectionViewCell {
   }
   
   fileprivate func setupViews() {
-    imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true        
+    imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
     
     let stackView = UIStackView(arrangedSubviews: [
       imageView, nameLabel, artistNameLabel
