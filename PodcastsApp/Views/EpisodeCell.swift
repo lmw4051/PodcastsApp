@@ -23,6 +23,8 @@ class EpisodeCell: UITableViewCell {
     }
   }
   // MARK: - View Life Cycle
+  @IBOutlet weak var progressLabel: UILabel!
+  @IBOutlet weak var progressContainerView: UIView!
   @IBOutlet weak var episodeImageView: UIImageView!
   @IBOutlet weak var pubDateLabel: UILabel!
   @IBOutlet weak var titleLabel: UILabel! {

@@ -69,7 +69,8 @@ class PlayerDetailsView: UIView {
   
   @IBOutlet weak var playPauseButton: UIButton! {
     didSet {
-      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+//      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      setupPauseButtonImage()
       playPauseButton.addTarget(self, action: #selector(handlePlayPause), for: .touchUpInside)
     }
   }
@@ -167,6 +168,7 @@ class PlayerDetailsView: UIView {
       let playerItem = AVPlayerItem(url: url)
       player.replaceCurrentItem(with: playerItem)
       player.play()
+      setupPauseButtonImage()
     }
   }
   
@@ -241,8 +243,9 @@ class PlayerDetailsView: UIView {
     MPRemoteCommandCenter.shared().playCommand.isEnabled = true
     MPRemoteCommandCenter.shared().playCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
       self.player.play()
-      self.playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-      self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      self.setupPauseButtonImage()
+//      self.playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+//      self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
       
       self.setupElapsedTime(playbackRate: 1)
       return .success
@@ -251,8 +254,9 @@ class PlayerDetailsView: UIView {
     commandCenter.pauseCommand.isEnabled = true
     commandCenter.pauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
       self.player.pause()
-      self.playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
-      self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      self.setupPlayButtonImage()
+//      self.playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+//      self.miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
       
       self.setupElapsedTime(playbackRate: 0)
       return .success
@@ -303,19 +307,31 @@ class PlayerDetailsView: UIView {
     NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: .AVCaptureSessionInterruptionEnded, object: nil)
   }
     
+  fileprivate func setupPlayButtonImage() {
+    playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+    miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+  }
+  
+  fileprivate func setupPauseButtonImage() {
+    playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+    miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+  }
+  
   // MARK: - Selector Methods
   @objc func handlePlayPause() {
     print("Trying to play and pause")
     if player.timeControlStatus == .paused {
       player.play()
-      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+      setupPauseButtonImage()
+//      playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+//      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
       enlargeEpisodeImageView()
       self.setupElapsedTime(playbackRate: 1)
     } else {
       player.pause()
-      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
-      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      setupPlayButtonImage()
+//      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+//      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
       shrinkEpisodeImageView()
       self.setupElapsedTime(playbackRate: 0)
     }
@@ -405,8 +421,9 @@ class PlayerDetailsView: UIView {
     
     if type == AVAudioSession.InterruptionType.began.rawValue {
       print("Interruption began")
-      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
-      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+      setupPlayButtonImage()
+//      playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+//      miniPlayPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
     } else {
       print("Interruption ended")
       
@@ -414,8 +431,9 @@ class PlayerDetailsView: UIView {
       
       if options == AVAudioSession.InterruptionOptions.shouldResume.rawValue {
         player.play()
-        playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-        miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+        setupPauseButtonImage()
+//        playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+//        miniPlayPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
       }
     }
   }

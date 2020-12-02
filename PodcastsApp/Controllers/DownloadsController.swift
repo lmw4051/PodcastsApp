@@ -19,6 +19,7 @@ class DownloadsController: UITableViewController {
     super.viewDidLoad()
     
     setupTableView()
+    setupObservers()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -31,6 +32,33 @@ class DownloadsController: UITableViewController {
   fileprivate func setupTableView() {
     let nib = UINib(nibName: "EpisodeCell", bundle: nil)
     tableView.register(nib, forCellReuseIdentifier: cellId)
+  }
+  
+  fileprivate func setupObservers() {
+    NotificationCenter.default.addObserver(self, selector: #selector(handleDownloadProgress), name: .downloadProgress, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleDownloadComplete), name: .downloadComplete, object: nil)
+  }
+  
+  @objc fileprivate func handleDownloadProgress(notification: Notification) {
+    guard let userInfo = notification.userInfo as? [String: Any] else { return }
+    guard let progress = userInfo["progress"] as? Double else { return }
+    guard let title = userInfo["title"] as? String else { return }
+    print(progress, title)
+    
+    guard let index = self.episodes.firstIndex(where: { $0.title == title }) else { return }
+    let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeCell
+    cell?.progressLabel.text = "\(Int(progress * 100))%"
+    cell?.progressContainerView.isHidden = false
+    
+    if progress == 1 {
+      cell?.progressContainerView.isHidden = true
+    }
+  }
+  
+  @objc fileprivate func handleDownloadComplete(notification: Notification) {
+    guard let episodeDownloadComplete = notification.object as? APIService.EpisodeDownloadCompleteTuple else { return }
+    guard let index = self.episodes.firstIndex(where: { $0.title == episodeDownloadComplete.episodeTitle }) else { return }
+    self.episodes[index].fileUrl = episodeDownloadComplete.fileUrl
   }
   
   // MARK: - UITableViewDataSource Methods
@@ -57,7 +85,7 @@ class DownloadsController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let episode = self.episodes[indexPath.row]        
+    let episode = self.episodes[indexPath.row]
     
     if episode.fileUrl != nil {
       UIApplication.mainTabBarController()?.maximizePlayerDetails(episode: episode, playlistEpisodes: self.episodes)

@@ -25,7 +25,7 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     setupSearchBar()
     setupTableView()
     
-    searchBar(searchController.searchBar, textDidChange: "Apple")
+    searchBar(searchController.searchBar, textDidChange: "BrianVoong")
   }
   
   // MARK: - Setup Methods
