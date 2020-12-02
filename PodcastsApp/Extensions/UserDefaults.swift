@@ -12,6 +12,7 @@ extension UserDefaults {
   static let favoritedPodcastKey = "favoritedPodcastKey"
   static let downloadedEpisodesKey = "downloadedEpisodesKey"
   
+  // MARK: - Podcasts
   func savedPodcasts() -> [Podcast] {
     guard let savedPodcastsData = UserDefaults.standard.data(forKey: UserDefaults.favoritedPodcastKey) else { return [] }
     guard let savedPodcasts = NSKeyedUnarchiver.unarchiveObject(with: savedPodcastsData) as? [Podcast] else { return [] }
@@ -29,10 +30,12 @@ extension UserDefaults {
     UserDefaults.standard.set(data, forKey: UserDefaults.favoritedPodcastKey)
   }
   
+  // MARK: - Episode
   func downloadEpisode(episode: Episode) {
     do {
       var episodes = downloadedEpisodes()
-      episodes.append(episode)
+//      episodes.append(episode)
+      episodes.insert(episode, at: 0)
       let data = try JSONEncoder().encode(episodes)
       UserDefaults.standard.set(data, forKey: UserDefaults.downloadedEpisodesKey)
     } catch let encodeError {
