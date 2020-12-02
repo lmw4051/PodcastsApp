@@ -8,3 +8,7 @@ Feature:
 Programming Language: Swift
 Design Pattern: MVC
 Layout: AutoLayout Programmatically + XIB
+
+Dont't forget to call pod install after cloning!
+
+![Imgur](https://i.imgur.com/SL88gJx.png)
