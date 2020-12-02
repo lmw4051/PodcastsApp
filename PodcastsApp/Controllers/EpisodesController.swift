@@ -22,18 +22,48 @@ class EpisodesController: UITableViewController {
   
   fileprivate let cellId = "cellId"
   
+  let favoritedPodcastKey = "favoritedPodcastKey"
+  
   // MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
     setupTableView()
+    setupNavigationBarButtons()
   }
   
   // MARK: - Setup Methods
   fileprivate func setupTableView() {
-//    tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
     let nib = UINib(nibName: "EpisodeCell", bundle: nil)
     tableView.register(nib, forCellReuseIdentifier: cellId)
     tableView.tableFooterView = UIView()
+  }
+  
+  fileprivate func setupNavigationBarButtons() {
+    navigationItem.rightBarButtonItems = [
+      UIBarButtonItem(title: "Favorite", style: .plain, target: self, action: #selector(handleSaveFavorite)),
+      UIBarButtonItem(title: "Fetch", style: .plain, target: self, action: #selector(handleFetchSavedPodcasts))
+    ]
+  }
+  
+  @objc func handleSaveFavorite() {
+    print("handleSaveFavorite")
+    
+    guard let podcast = self.podcast else { return }
+    
+    // Transform Podcast into Data
+    let data = NSKeyedArchiver.archivedData(withRootObject: podcast)
+    UserDefaults.standard.set(data, forKey: favoritedPodcastKey)
+  }
+  
+  @objc func handleFetchSavedPodcasts() {
+    print("handleFetchSavedPodcasts")
+    let value = UserDefaults.standard.value(forKey: favoritedPodcastKey) as? String
+    print(value ?? "")
+    
+    // Get the Podcast object from NSUserDefaults
+    guard let data = UserDefaults.standard.data(forKey: favoritedPodcastKey) else { return }
+    let podcast = NSKeyedUnarchiver.unarchiveObject(with: data) as? Podcast
+    print(podcast?.trackName, podcast?.artistName)
   }
   
   // MARK: - Parser
