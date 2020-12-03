@@ -157,7 +157,7 @@ class PlayerDetailsView: UIView {
   
   // MARK: - Helper Methods
   fileprivate func playEpisode() {
-    print("Trying to play episode at url:", episode.streamUrl)
+    print("Trying to play episode at url")
     
     if episode.fileUrl != nil {
       playEpisodeUsingFileUrl()
@@ -185,6 +185,7 @@ class PlayerDetailsView: UIView {
     let playerItem = AVPlayerItem(url: trueLocation)
     player.replaceCurrentItem(with: playerItem)
     player.play()
+    setupPauseButtonImage()
   }
   
   fileprivate func enlargeEpisodeImageView() {
